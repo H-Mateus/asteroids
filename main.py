@@ -1,6 +1,8 @@
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
+import sys
+
 import pygame
 
 import asteroidfield
@@ -45,6 +47,12 @@ def main():
             group.draw(screen)
         for group in updatable:
             group.update(dt)
+
+        # Check for asteroid collision with the player
+        for asteroid in asteroids:
+            if asteroid.collisions(player):
+                print("Game over!")
+                sys.exit()
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000
