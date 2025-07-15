@@ -13,6 +13,11 @@ def main():
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
 
+    # Create groups
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
     # Create the screen object
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     # Create clock object and delta variable
@@ -27,8 +32,10 @@ def main():
             if event.type == pygame.QUIT:
                 return
         pygame.Surface.fill(screen, color="black")
-        player.draw(screen)
-        player.update(dt)
+        for group in drawable:
+            group.draw(screen)
+        for group in updatable:
+            group.update(dt)
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000
