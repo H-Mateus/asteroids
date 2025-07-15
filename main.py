@@ -1,6 +1,3 @@
-# this allows us to use code from
-# the open-source pygame library
-# throughout this file
 import sys
 
 import pygame
@@ -31,6 +28,11 @@ def main():
 
     # Create the screen object
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Initialize font for score display
+    font = pygame.font.Font(None, 36)
+    score = 0
+
     # Create clock object and delta variable
     clock = pygame.time.Clock()
     dt = 0
@@ -54,11 +56,32 @@ def main():
         for asteroid in asteroids:
             if asteroid.collisions(player):
                 print("Game over!")
+                print(f"Score: {score}")
                 sys.exit()
+
             for shot in shots:
                 if asteroid.collisions(shot):
+                    # Add score based on size
+                    if asteroid.radius == ASTEROID_MIN_RADIUS:  # Small asteroid (20)
+                        score += 100
+                    elif (
+                        asteroid.radius == ASTEROID_MIN_RADIUS * 2
+                    ):  # Medium asteroid (40)
+                        score += 50
+                    elif (
+                        asteroid.radius == ASTEROID_MIN_RADIUS * 3
+                    ):  # Large asteroid (60)
+                        score += 20
+                    else:
+                        score += 50  # Fallback for unexpected sizes
+
                     asteroid.split()
                     shot.kill()
+
+        # Render and display the score
+        score_text = font.render(f"Score: {score}", True, "white")
+        screen.blit(score_text, (10, 10))
+
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000
