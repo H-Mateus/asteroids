@@ -33,6 +33,9 @@ def main():
     font = pygame.font.Font(None, 36)
     score = 0
 
+    # Add live counter
+    lives = 3
+
     # Create clock object and delta variable
     clock = pygame.time.Clock()
     dt = 0
@@ -55,9 +58,23 @@ def main():
         # Check for asteroid collision with the player
         for asteroid in asteroids:
             if asteroid.collisions(player):
-                print("Game over!")
-                print(f"Score: {score}")
-                sys.exit()
+                lives -= 1
+                if lives > 0:
+                    # Reset player position
+                    player.position = pygame.Vector2(
+                        SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
+                    )
+
+                    # Clear all asteroids
+                    for asteroid in asteroids:
+                        asteroid.kill()
+
+                    # Recreate asteroid field
+                    asteroid_field = AsteroidField()
+                else:
+                    print("Game over!")
+                    print(f"Score: {score}")
+                    sys.exit()
 
             for shot in shots:
                 if asteroid.collisions(shot):
@@ -81,6 +98,8 @@ def main():
         # Render and display the score
         score_text = font.render(f"Score: {score}", True, "white")
         screen.blit(score_text, (10, 10))
+        lives_text = font.render(f"Lives: {lives}", True, "white")
+        screen.blit(lives_text, (10, 40))
 
         pygame.display.flip()
 
